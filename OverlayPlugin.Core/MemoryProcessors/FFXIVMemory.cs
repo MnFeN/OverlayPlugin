@@ -22,10 +22,11 @@ namespace RainbowMage.OverlayPlugin.MemoryProcessors
         private IntPtr processHandle;
         private FFXIVRepository repository;
 
-        // The "international" version always uses the most recent.
+        // International/CN/KO versions are all on latest build
         private static Version globalVersion = new Version(99, 0);
-        private static Version cnVersion = new Version(7, 0);
-        private static Version koVersion = new Version(6, 5, 8);
+        private static Version cnVersion = new Version(99, 0);
+        private static Version koVersion = new Version(99, 0);
+        private static Version tcVersion = new Version(7, 2);
 
         public FFXIVMemory(TinyIoCContainer container)
         {
@@ -104,11 +105,10 @@ namespace RainbowMage.OverlayPlugin.MemoryProcessors
             return false;
         }
 
-        public unsafe static string GetStringFromBytes(byte* source, int size)
+        public unsafe static string GetStringFromBytes(byte* source, int size, int realSize = 0)
         {
             var bytes = new byte[size];
             Marshal.Copy((IntPtr)source, bytes, 0, size);
-            var realSize = 0;
             for (var i = 0; i < size; i++)
             {
                 if (bytes[i] != 0)
@@ -396,6 +396,8 @@ namespace RainbowMage.OverlayPlugin.MemoryProcessors
                 target = cnVersion;
             else if (region == GameRegion.Korean)
                 target = koVersion;
+            else if (region == GameRegion.TraditionalChinese)
+                target = tcVersion;
             else
                 target = globalVersion;
 

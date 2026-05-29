@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Globalization;
+using System.Runtime.InteropServices;
 using RainbowMage.OverlayPlugin.NetworkProcessors.PacketHelper;
 
 namespace RainbowMage.OverlayPlugin.NetworkProcessors
@@ -6,7 +7,8 @@ namespace RainbowMage.OverlayPlugin.NetworkProcessors
     class LineActorSetPos : LineBaseCustom<
             Server_MessageHeader_Global, LineActorSetPos.ActorSetPos_v655,
             Server_MessageHeader_CN, LineActorSetPos.ActorSetPos_v655,
-            Server_MessageHeader_KR, LineActorSetPos.ActorSetPos_v655>
+            Server_MessageHeader_KR, LineActorSetPos.ActorSetPos_v655,
+            Server_MessageHeader_TC, LineActorSetPos.ActorSetPos_v655>
     {
         [StructLayout(LayoutKind.Explicit, Size = structSize, Pack = 1)]
         internal unsafe struct ActorSetPos_v655 : IPacketStruct
@@ -39,14 +41,10 @@ namespace RainbowMage.OverlayPlugin.NetworkProcessors
 
             public string ToString(long epoch, uint ActorID)
             {
-                return $"{ActorID:X8}|" +
-                    $"{FFXIVRepository.ConvertHeading(rotation):F4}|" +
-                    $"{unknown1:X2}|" +
-                    $"{unknown2:X2}|" +
-                    $"{x:F4}|" +
-                    // y and z are intentionally flipped to match other log lines
-                    $"{z:F4}|" +
-                    $"{y:F4}";
+                return
+                    string.Format(CultureInfo.InvariantCulture,
+                        "{0:X8}|{1:F4}|{2:X2}|{3:X2}|{4:F4}|{5:F4}|{6:F4}",
+                        ActorID, FFXIVRepository.ConvertHeading(rotation), unknown1, unknown2, x, z, y);
             }
         }
 
